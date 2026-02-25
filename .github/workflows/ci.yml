@@ -28,18 +28,7 @@ jobs:
 
       # ── 2. All modules import without errors ───────────────────────────────
       - name: Verify imports
-        run: >
-          python -c "
-          from sptui.app import SptApp;
-          from sptui.ai import _TOOLS, _openai_tools;
-          from sptui.config import ensure_config;
-          from sptui.client import SpotifyClient, format_duration, format_track;
-          from sptui.screens import HelpScreen, DeviceScreen, AIScreen;
-          from sptui.widgets.sidebar import Sidebar;
-          from sptui.widgets.now_playing import NowPlayingBar;
-          from sptui.widgets.main_panel import MainPanel;
-          print('imports OK')
-          "
+        run: python tests/test_imports.py
 
       # ── 3. Install scripts work end-to-end (using local checkout) ──────────
       - name: Run install.sh
@@ -57,13 +46,7 @@ jobs:
 
       # ── 4. sptui command is registered after install ───────────────────────
       - name: Verify sptui registered in pipx
-        run: >
-          python -c "
-          import subprocess, sys;
-          r = subprocess.run([sys.executable, '-m', 'pipx', 'list'], text=True, capture_output=True);
-          print(r.stdout);
-          assert 'sptui' in r.stdout, 'sptui not found in pipx list'
-          "
+        run: python tests/test_pipx.py
 
   # ── Release: runs only on version tags, after all tests pass ──────────────
   release:
