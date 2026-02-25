@@ -38,7 +38,7 @@ jobs:
           --onefile
           --name sptui
           --collect-all textual
-          sptui/__main__.py
+          entry.py
 
       - name: Rename artifact
         shell: bash
