@@ -14,9 +14,11 @@ A Spotify TUI client for the terminal.
 Download the latest binary for your platform from [Releases](https://github.com/kofolmarko/sptui/releases).
 
 ```bash
-# Linux / macOS — make executable and run
-chmod +x sptui-linux-x86_64
-./sptui-linux-x86_64
+# Linux
+chmod +x sptui-linux-x86_64 && ./sptui-linux-x86_64
+
+# macOS (Apple Silicon — Intel users can run via Rosetta or install from source)
+chmod +x sptui-macos-arm64 && ./sptui-macos-arm64
 ```
 
 On Windows, download `sptui-windows-x86_64.exe` and run it directly.

@@ -17,8 +17,6 @@ jobs:
             artifact: sptui-linux-x86_64
           - os: windows-latest
             artifact: sptui-windows-x86_64.exe
-          - os: macos-13
-            artifact: sptui-macos-x86_64
           - os: macos-latest
             artifact: sptui-macos-arm64
 
