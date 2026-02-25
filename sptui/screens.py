@@ -4,7 +4,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
 from textual.screen import ModalScreen
-from textual.widgets import Label, ListItem, ListView, Static
+from textual.widgets import Input, Label, ListItem, ListView, Static
 from textual import work
 
 from .client import SpotifyClient
@@ -23,6 +23,7 @@ HELP_TEXT = """\
  /          Focus search bar
  Enter      Play selected item
  d          Select playback device
+ a          AI command (natural language)
  ↑ / ↓     Navigate lists and tables
  ?          Toggle this help screen
  q          Quit
@@ -163,3 +164,79 @@ class DeviceScreen(ModalScreen):
         except Exception as e:
             self.app.call_from_thread(self.app.notify, str(e), severity="error")
             self.app.call_from_thread(self.dismiss)
+
+
+class AIScreen(ModalScreen):
+    """Natural language command palette powered by Claude."""
+
+    BINDINGS = [Binding("escape", "dismiss", "Close")]
+
+    DEFAULT_CSS = """
+    AIScreen { align: center middle; }
+    #ai-dialog {
+        background: $surface;
+        border: thick $accent;
+        padding: 1 2;
+        width: 72;
+        height: auto;
+    }
+    #ai-title {
+        text-align: center;
+        text-style: bold;
+        color: $accent;
+        margin-bottom: 1;
+    }
+    #ai-status {
+        height: 1;
+        margin-top: 1;
+        color: $text-muted;
+    }
+    """
+
+    def __init__(self, client: SpotifyClient, ai_config: dict, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self._client = client
+        self._ai_config = ai_config
+        self._running = False
+
+    def _provider_label(self) -> str:
+        provider = self._ai_config.get("provider", "anthropic")
+        model = self._ai_config.get("model", "")
+        names = {"anthropic": "Claude", "ollama": "Ollama", "openai_compatible": "AI"}
+        name = names.get(provider, "AI")
+        return f"✦ {name}  [{model}]" if model else f"✦ {name}"
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="ai-dialog"):
+            yield Label(self._provider_label(), id="ai-title")
+            yield Input(
+                placeholder="e.g. play something chill, skip this, volume 50, repeat off…",
+                id="ai-input",
+            )
+            yield Static("Type a command and press Enter", id="ai-status")
+
+    def on_mount(self) -> None:
+        self.query_one("#ai-input", Input).focus()
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        query = event.value.strip()
+        if not query or self._running:
+            return
+        self._running = True
+        self.query_one("#ai-input", Input).disabled = True
+        self.query_one("#ai-status", Static).update("✦ Thinking…")
+        self._run_ai(query)
+
+    @work(thread=True)
+    def _run_ai(self, query: str) -> None:
+        from .ai import run_ai_command
+        try:
+            result = run_ai_command(query, self._client, self._ai_config)
+            self.app.call_from_thread(self._on_done, result, False)
+        except Exception as exc:
+            self.app.call_from_thread(self._on_done, str(exc), True)
+
+    def _on_done(self, message: str, is_error: bool) -> None:
+        severity = "error" if is_error else "information"
+        self.app.notify(message, severity=severity, timeout=6)
+        self.dismiss()

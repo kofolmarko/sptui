@@ -6,7 +6,7 @@ from textual.widgets import DataTable
 from textual import work
 
 from .client import SpotifyClient
-from .screens import DeviceScreen, HelpScreen
+from .screens import AIScreen, DeviceScreen, HelpScreen
 from .widgets.main_panel import MainPanel
 from .widgets.now_playing import NowPlayingBar
 from .widgets.sidebar import (
@@ -45,6 +45,7 @@ class SptApp(App):
         Binding("minus", "volume_down", "Vol-", show=False),
         Binding("slash", "focus_search", "Search", show=False),
         Binding("d", "devices", "Devices", show=False),
+        Binding("a", "ai_command", "AI", show=False),
     ]
 
     def __init__(self, client: SpotifyClient, config: dict, **kwargs) -> None:
@@ -101,6 +102,27 @@ class SptApp(App):
 
     def action_devices(self) -> None:
         self.push_screen(DeviceScreen(self._client))
+
+    def action_ai_command(self) -> None:
+        import os
+        ai_config = self._config.get("ai")
+
+        if not ai_config and os.environ.get("ANTHROPIC_API_KEY"):
+            ai_config = {
+                "provider": "anthropic",
+                "api_key": os.environ["ANTHROPIC_API_KEY"],
+                "model": "claude-opus-4-6",
+            }
+
+        if not ai_config:
+            self.notify(
+                "No AI provider configured. Edit [b]~/.config/sptui/config.json[/b] "
+                "to add an [b]'ai'[/b] section.",
+                severity="warning",
+                timeout=8,
+            )
+            return
+        self.push_screen(AIScreen(self._client, ai_config))
 
     def action_play_pause(self) -> None:
         self.query_one("#now-playing", NowPlayingBar).action_play_pause()
