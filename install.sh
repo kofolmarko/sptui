@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-REPO="git+https://github.com/kofolmarko/sptui.git"
+REPO="${SPTUI_REPO:-git+https://github.com/kofolmarko/sptui.git}"
 
 # ── Find Python 3.10+ ─────────────────────────────────────────────────────────
 PYTHON=""

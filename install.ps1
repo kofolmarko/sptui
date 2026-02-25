@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$REPO = "git+https://github.com/kofolmarko/sptui.git"
+$REPO = if ($env:SPTUI_REPO) { $env:SPTUI_REPO } else { "git+https://github.com/kofolmarko/sptui.git" }
 
 # ── Find Python 3.10+ ─────────────────────────────────────────────────────────
 $python = $null
