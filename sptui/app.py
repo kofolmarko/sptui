@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.widgets import DataTable
 from textual import work
 
 from .client import SpotifyClient
@@ -43,7 +44,6 @@ class SptApp(App):
         Binding("plus", "volume_up", "Vol+", show=False),
         Binding("minus", "volume_down", "Vol-", show=False),
         Binding("slash", "focus_search", "Search", show=False),
-        Binding("enter", "play_selected", "Play", show=False),
         Binding("d", "devices", "Devices", show=False),
     ]
 
@@ -126,7 +126,7 @@ class SptApp(App):
     def action_focus_search(self) -> None:
         self.query_one("#sidebar", Sidebar).focus_search()
 
-    def action_play_selected(self) -> None:
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         panel = self.query_one("#main-panel", MainPanel)
         track = panel.get_selected_track()
         if track:
