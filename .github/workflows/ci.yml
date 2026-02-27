@@ -68,12 +68,12 @@ jobs:
 
             **Linux / macOS**
             ```bash
-            curl -fsSL https://raw.githubusercontent.com/kofolmarko/sptui/main/install.sh | bash
+            curl -fsSL https://raw.githubusercontent.com/kofolmarko/sptui/master/install.sh | bash
             ```
 
             **Windows (PowerShell)**
             ```powershell
-            irm https://raw.githubusercontent.com/kofolmarko/sptui/main/install.ps1 | iex
+            irm https://raw.githubusercontent.com/kofolmarko/sptui/master/install.ps1 | iex
             ```
 
             Requires Python 3.10+.

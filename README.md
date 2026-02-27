@@ -12,12 +12,12 @@ A Spotify TUI client for the terminal.
 
 **Linux / macOS**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kofolmarko/sptui/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/kofolmarko/sptui/master/install.sh | bash
 ```
 
 **Windows (PowerShell)**
 ```powershell
-irm https://raw.githubusercontent.com/kofolmarko/sptui/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/kofolmarko/sptui/master/install.ps1 | iex
 ```
 
 Both scripts install [pipx](https://pipx.pypa.io) if needed, then install sptui into an isolated environment so it doesn't interfere with anything else on your system.
