@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 result = subprocess.run(
-    [sys.executable, "-m", "pipx", "list"],
+    ["pipx", "list"],
     text=True,
     capture_output=True,
 )
