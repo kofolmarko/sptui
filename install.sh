@@ -31,7 +31,7 @@ fi
 
 # ── Install sptui ─────────────────────────────────────────────────────────────
 echo "Installing sptui..."
-"$PYTHON" -m pipx install "$REPO" --force
+pipx install "$REPO" --force
 
 echo ""
 echo "✓ Done. Run: sptui"

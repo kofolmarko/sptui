@@ -39,7 +39,7 @@ jobs:
 
       - name: Run install.ps1
         if: runner.os == 'Windows'
-        shell: powershell
+        shell: pwsh
         env:
           SPTUI_REPO: "."
         run: .\install.ps1
